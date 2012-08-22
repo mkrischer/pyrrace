@@ -199,6 +199,8 @@ while run:
 	if crash:
 		speed = speed - crash_brake #reduce speed
 		damage += speed/max_speed*crash_damage #increase damage according to speed
+                if damage >= max_damage:
+                        damage = max_damage
 		crash = False #reset flag
 		msg = "Crash"
 		msgtimer = time
