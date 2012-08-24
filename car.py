@@ -1,4 +1,36 @@
-# car.py
+#!/usr/bin/env python
+# Pyrrace Version 1.0 - Simple car race against the clock
+# (C) 2012 Manuel Krischer, https://github.com/mkrischer/pyrrace
+#
+# created with vim, kolourpaint, gimp
+#
+# For restriction on used game fonts, see FONTLICENSE.txt
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Dieses Programm ist Freie Software: Sie koennen es unter den Bedingungen
+# der GNU General Public License, wie von der Free Software Foundation,
+# Version 3 der Lizenz oder (nach Ihrer Option) jeder spaeteren
+# veroeffentlichten Version, weiterverbreiten und/oder modifizieren.
+#
+# Dieses Programm wird in der Hoffnung, dass es nuetzlich sein wird, aber
+# OHNE JEDE GEWAEHRLEISTUNG, bereitgestellt; sogar ohne die implizite
+# Gewaehrleistung der MARKTFAEHIGKEIT oder EIGNUNG FUER EINEN BESTIMMTEN ZWECK.
+# Siehe die GNU General Public License fuer weitere Details.
+#
+# Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
+# Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>
 
 import pygame, random, math
 from pygame.locals import *
@@ -55,6 +87,7 @@ statusfield.fill((200,200,200))
 startx1 = 525 
 starty1 = 664
 
+#not used right now
 #second starter
 startx2 = 495
 starty2 = 700
@@ -106,8 +139,8 @@ newlap = False 		#don't add a new lap if checkpoints aren't flagged true
 
 
 msg=""			#start with empty message
-msgtime=2000		#how long (in ms) message appears
-msgtimer=0		#timemessage started
+msgtime=2000		#how long (in ms) message appears (default 2000 aka 2sec)
+msgtimer=0		#timemessage started (used to set the starttime for a message)
 
 
 pygame.key.set_repeat(reaction, 25)	#keyboard multiply strokerate
@@ -168,19 +201,7 @@ while run:
 						speed = max_backward
 				else: 
 					speed = speed - brake
-        #else:
-         #       if speed - slowdown > 0:
-          #              speed = speed - slowdown
-           #     if speed <= 0:
-            #            speed = 0
 
-
-	#check for damage level
-	if damage >= max_damage:
-		msg = "CAR BROKEN"
-                msgtimer = time
-		max_speed = max_speed/4
-		break
 	# crashing the walls?
 	if carx <= 0:
 		carx  = 0 + bumper
@@ -199,10 +220,14 @@ while run:
 	if crash:
 		speed = speed - crash_brake #reduce speed
 		damage += speed/max_speed*crash_damage #increase damage according to speed
+                msg = "Crash"                
                 if damage >= max_damage:
+                        msg = "CAR BROKEN"
                         damage = max_damage
-		crash = False #reset flag
-		msg = "Crash"
+                        pygame.time.delay(3000)
+                        #max_speed = max_speed/4 #alternative massive slow down; remove break below
+                        break
+		crash = False    #reset flag
 		msgtimer = time
 	
 	#mark area for checkpoint 1 
@@ -293,7 +318,7 @@ while run:
 	xt2 = xfont.render(timer2, True, (0,0,0), (200,200,200)) #fastestlap
 	xt3 = xfont.render(timer3, True, (0,0,0), (200,200,200)) #acttime
 	xt4 = xfont.render(dmg, True, (0,0,0), (200,200,200)) #car damage
-	msgtext = msgfont.render(msg, True, (255,0,0), (0,0,0))
+        msgtext = msgfont.render(msg, True, (200,30,30), (30,30,30)) #messagebox
 
 	#paint all stuff
         screen.blit(racefield,[0,0])
@@ -305,8 +330,8 @@ while run:
 	screen.blit(xt3, (screenx/2-320, screeny-235))
 	screen.blit(xt4, (screenx/2-320, screeny-210))
 	screen.blit(car,[carx-35,cary-35])
-	screen.blit(msgtext, (screenx/3, screeny/2-25))
-
+        if msg != "": #don't blit empty messages
+	        screen.blit(msgtext, (screenx/3, screeny/2-25))
 	
 	if debug:
 		screen.blit(carpostext, (50, screeny-50))
