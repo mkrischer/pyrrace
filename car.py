@@ -338,7 +338,7 @@ while run:
 		screen.blit(statustext, (50, 50))
 
 	pygame.display.update();
-	clock.tick(100)
+	clock.tick(200)
 print "you needed " + str(racetime/1000/60) + ":" + str(racetime/1000%60) + ":" + str(racetime/1000/60%60) + " min for " + str(laps) + " laps "
 print "your fastest lap was " + str(round(fasttime/float(1000),3)) + " seconds"
 pygame.quit()
